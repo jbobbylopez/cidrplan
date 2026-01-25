@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Subnet Planner</title>
+  <link rel="stylesheet" href="./assets/styles/main.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div>
+        <h1>Subnet Planner</h1>
+        <p class="subtitle">IPv4 subnet planning with divide/join, naming, and copy-paste JSON/HTML output.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="row">
+        <label class="field">
+          <span>Base CIDR</span>
+          <input id="baseCidr" type="text" placeholder="e.g., 10.0.0.0/16" spellcheck="false" />
+        </label>
+
+        <button id="applyBase" class="btn primary">Apply</button>
+        <button id="reset" class="btn">Reset</button>
+
+        <div class="spacer"></div>
+
+        <label class="toggle">
+          <input id="showDetails" type="checkbox" />
+          <span>Show details</span>
+        </label>
+
+        <label class="toggle">
+          <input id="outputFormat" type="checkbox" />
+          <span id="outputFormatLabel">Output: JSON</span>
+        </label>
+
+        <button id="copyOutput" class="btn">Copy</button>
+      </div>
+
+      <div id="error" class="error" hidden></div>
+    </section>
+
+    <section class="panel">
+      <div class="tableWrap">
+        <table class="table" id="subnetTable" aria-label="Subnet table">
+          <!-- rendered -->
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="outputHeader">
+        <h2>Copy/Paste Output</h2>
+        <p class="subtitle" id="outputHint">JSON reflects leaf subnets only (current plan).</p>
+      </div>
+      <pre class="code"><code id="outputCode"></code></pre>
+    </section>
+
+    <footer class="footer">
+      <small>Local-only app. No data leaves your browser.</small>
+    </footer>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
