@@ -3,6 +3,9 @@ import { renderApp } from "./ui/render.js";
 import { toMinimalJson } from "./output/toJson.js";
 import { toStaticHtmlTable } from "./output/toHtmlTable.js";
 
+// Ad configuration: toggle between AdSense and custom ads
+const USE_ADSENSE = false;
+
 const store = createStore();
 
 const els = {
@@ -80,6 +83,21 @@ els.copyOutput.addEventListener("click", async () => {
   }
 });
 
+// Ad system initialization
+function initializeAds() {
+  const customAdEl = document.getElementById("customAd");
+  const adsenseAdEl = document.getElementById("adsenseAd");
+  
+  if (USE_ADSENSE) {
+    customAdEl.hidden = true;
+    adsenseAdEl.hidden = false;
+  } else {
+    customAdEl.hidden = false;
+    adsenseAdEl.hidden = true;
+  }
+}
+
 // initial render
 syncControlsFromState();
 renderApp(store, els);
+initializeAds();
