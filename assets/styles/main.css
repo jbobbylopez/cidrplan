@@ -207,3 +207,10 @@ input[type="text"]:focus{
    font-size: 12px;
    line-height: 1.5;
  }
+ .footer-content a{
+   color: var(--accent);
+   text-decoration: none;
+ }
+ .footer-content a:hover{
+   text-decoration: underline;
+ }
