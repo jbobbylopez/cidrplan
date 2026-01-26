@@ -30,12 +30,27 @@ body{
 }
 
 .header{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
+   display:flex;
+   align-items:flex-end;
+   justify-content:space-between;
+   gap: 16px;
+   margin-bottom: 14px;
+ }
+
+ .adPlaceholder{
+   width: 100%;
+   height: 90px;
+   margin: 16px 0;
+   padding: 8px 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: rgba(255,255,255,.02);
+   border: 1px dashed var(--border);
+   border-radius: 8px;
+   color: var(--muted);
+   font-size: 12px;
+ }
 h1{ margin:0; font-size: 28px; letter-spacing:.2px; }
 .appName{
   font-family: var(--mono);
