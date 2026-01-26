@@ -6,7 +6,7 @@ function uid() {
 
 export function createStore() {
   const state = {
-    baseCidr: "10.0.0.0/24",
+    baseCidr: "10.0.0.0/8",
     showDetails: false,
     outputMode: "json", // "json" | "html"
     rootId: null,
