@@ -85,14 +85,60 @@ input[type="text"]:focus{
 }
 
 .toggle{
-  display:flex;
-  align-items:center;
-  gap: 8px;
-  user-select:none;
-  color: var(--muted);
-  font-size: 13px;
-}
-.toggle input{ transform: translateY(1px); }
+   display:flex;
+   align-items:center;
+   gap: 8px;
+   user-select:none;
+   color: var(--muted);
+   font-size: 13px;
+ }
+ .toggle input{ transform: translateY(1px); }
+
+ .toggleSwitch{
+   display:flex;
+   align-items:center;
+   gap: 10px;
+   user-select:none;
+   color: var(--muted);
+   font-size: 13px;
+   cursor: pointer;
+ }
+ .toggleSwitch input{
+   display: none;
+ }
+ .toggleSwitch .slider{
+   position: relative;
+   width: 44px;
+   height: 24px;
+   background: rgba(255,255,255,.08);
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   transition: all 0.3s ease;
+   display: flex;
+   align-items: center;
+   padding: 2px;
+   box-sizing: border-box;
+ }
+ .toggleSwitch .slider::after{
+   content: '';
+   display: block;
+   width: 18px;
+   height: 18px;
+   background: var(--text);
+   border-radius: 10px;
+   transition: transform 0.3s ease;
+   transform: translateX(0);
+ }
+ .toggleSwitch input:checked + .slider{
+   background: rgba(122,162,255,.25);
+   border-color: rgba(122,162,255,.6);
+ }
+ .toggleSwitch input:checked + .slider::after{
+   transform: translateX(20px);
+ }
+ .toggleSwitch .label{
+   min-width: 90px;
+ }
 
 .btn{
   padding: 10px 12px;
