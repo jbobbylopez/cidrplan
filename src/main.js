@@ -54,11 +54,11 @@ els.applyBase.addEventListener("click", () => {
 });
 
 els.reset.addEventListener("click", () => {
-  setError("");
-  store.initWithBase("10.0.0.0/24");
-  renderApp(store, els);
-  syncControlsFromState();
-});
+   setError("");
+   store.initWithBase("10.0.0.0/8");
+   renderApp(store, els);
+   syncControlsFromState();
+ });
 
 els.showDetails.addEventListener("change", () => {
   store.setShowDetails(els.showDetails.checked);
