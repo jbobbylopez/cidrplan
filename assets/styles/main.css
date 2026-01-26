@@ -199,6 +199,16 @@ input[type="text"]:focus{
 .table tr:hover td{
   background: rgba(255,255,255,.02);
 }
+.table td::selection,
+.table th::selection{
+  background: rgba(122,162,255,.4);
+  color: var(--text);
+}
+.table td::-moz-selection,
+.table th::-moz-selection{
+  background: rgba(122,162,255,.4);
+  color: var(--text);
+}
 
 .nameInput{
   width: 100%;
