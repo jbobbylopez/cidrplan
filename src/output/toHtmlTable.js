@@ -13,7 +13,7 @@ export function toStaticHtmlTable(leafNodes, { showDetails }) {
   const headers = [
     "Subnet",
     "Name",
-    "Hosts (total/usable)",
+    "Hosts (usable)",
     ...(showDetails ? ["Mask", "Broadcast", "Range"] : []),
   ];
 

@@ -37,7 +37,7 @@ function renderTableHtml(leafNodes, { showDetails }) {
   const headCols = [
     `<th>Subnet</th>`,
     `<th>Subnet name</th>`,
-    `<th>Hosts</th>`,
+    `<th>Hosts (usable)</th>`,
     ...(showDetails ? [`<th>Mask</th>`, `<th>Broadcast</th>`, `<th>Usable range</th>`] : []),
     `<th>Divide</th>`,
     `<th>Join</th>`,
