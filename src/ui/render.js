@@ -91,7 +91,7 @@ export function renderOutput(store, els) {
   const leafNodes = leafIds.map(id => store.getNode(id));
 
   if (store.state.outputMode === "json") {
-    els.outputHint.textContent = "JSON reflects leaf subnets only (current plan).";
+    els.outputHint.textContent = "JSON reflects data in above table (realtime)";
   } else {
     els.outputHint.textContent = "HTML is a static table of leaf subnets only (current plan).";
   }
