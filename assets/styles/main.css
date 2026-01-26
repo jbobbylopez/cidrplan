@@ -37,6 +37,11 @@ body{
   margin-bottom: 14px;
 }
 h1{ margin:0; font-size: 28px; letter-spacing:.2px; }
+.appName{
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 700;
+}
 h2{ margin:0 0 6px 0; font-size: 16px; }
 .subtitle{ margin:6px 0 0 0; color:var(--muted); font-size: 13px; line-height: 1.4; }
 
