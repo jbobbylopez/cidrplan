@@ -96,9 +96,29 @@ input[type="text"]{
   outline: none;
 }
 input[type="text"]:focus{
-  border-color: rgba(122,162,255,.7);
-  box-shadow: 0 0 0 3px rgba(122,162,255,.15);
-}
+   border-color: rgba(122,162,255,.7);
+   box-shadow: 0 0 0 3px rgba(122,162,255,.15);
+ }
+ select{
+   width: 250px;
+   padding: 10px 12px;
+   border-radius: 10px;
+   border: 1px solid var(--border);
+   background: rgba(0,0,0,.25);
+   color: var(--text);
+   outline: none;
+   cursor: pointer;
+   font-family: var(--sans);
+   font-size: 13px;
+ }
+ select:focus{
+   border-color: rgba(122,162,255,.7);
+   box-shadow: 0 0 0 3px rgba(122,162,255,.15);
+ }
+ select option{
+   background: var(--panel);
+   color: var(--text);
+ }
 
 .toggle{
    display:flex;

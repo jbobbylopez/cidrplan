@@ -1,6 +1,7 @@
 import { createStore } from "./state/store.js";
 import { renderApp } from "./ui/render.js";
 import { toMinimalJson } from "./output/toJson.js";
+import { toYaml } from "./output/toYaml.js";
 import { toStaticHtmlTable } from "./output/toHtmlTable.js";
 
 // Ad configuration: toggle between AdSense and custom ads
@@ -9,24 +10,34 @@ const USE_ADSENSE = false;
 const store = createStore();
 
 const els = {
-  baseCidr: document.getElementById("baseCidr"),
-  applyBase: document.getElementById("applyBase"),
-  reset: document.getElementById("reset"),
-  showDetails: document.getElementById("showDetails"),
-  outputFormat: document.getElementById("outputFormat"),
-  outputFormatLabel: document.getElementById("outputFormatLabel"),
-  copyOutput: document.getElementById("copyOutput"),
-  error: document.getElementById("error"),
-  table: document.getElementById("subnetTable"),
-  outputCode: document.getElementById("outputCode"),
-  outputHint: document.getElementById("outputHint"),
+   baseCidr: document.getElementById("baseCidr"),
+   applyBase: document.getElementById("applyBase"),
+   reset: document.getElementById("reset"),
+   showDetails: document.getElementById("showDetails"),
+   outputFormat: document.getElementById("outputFormat"),
+   copyOutput: document.getElementById("copyOutput"),
+   error: document.getElementById("error"),
+   table: document.getElementById("subnetTable"),
+   outputCode: document.getElementById("outputCode"),
+   outputHint: document.getElementById("outputHint"),
   onNeedOutput: (leafNodes) => {
-    const out = store.state.outputMode === "json"
-      ? toMinimalJson(leafNodes)
-      : toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+     let out;
+     switch (store.state.outputMode) {
+       case "json":
+         out = toMinimalJson(leafNodes);
+         break;
+       case "yaml":
+         out = toYaml(leafNodes);
+         break;
+       case "html":
+         out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+         break;
+       default:
+         out = "";
+     }
 
-    els.outputCode.textContent = out;
-  }
+     els.outputCode.textContent = out;
+   }
 };
 
 function setError(msg) {
@@ -40,11 +51,10 @@ function setError(msg) {
 }
 
 function syncControlsFromState() {
-  els.baseCidr.value = store.state.baseCidr;
-  els.showDetails.checked = store.state.showDetails;
-  els.outputFormat.checked = store.state.outputMode === "html";
-  els.outputFormatLabel.textContent = `Output: ${store.state.outputMode.toUpperCase()}`;
-}
+   els.baseCidr.value = store.state.baseCidr;
+   els.showDetails.checked = store.state.showDetails;
+   els.outputFormat.value = store.state.outputMode;
+ }
 
 els.applyBase.addEventListener("click", () => {
   try {
@@ -69,10 +79,10 @@ els.showDetails.addEventListener("change", () => {
 });
 
 els.outputFormat.addEventListener("change", () => {
-  store.setOutputMode(els.outputFormat.checked ? "html" : "json");
-  syncControlsFromState();
-  renderApp(store, els);
-});
+   store.setOutputMode(els.outputFormat.value);
+   syncControlsFromState();
+   renderApp(store, els);
+ });
 
 els.copyOutput.addEventListener("click", async () => {
   try {

@@ -90,8 +90,9 @@ export function createStore() {
   }
 
   function setOutputMode(mode) {
-    state.outputMode = mode === "html" ? "html" : "json";
-  }
+     const validModes = ["json", "yaml", "html"];
+     state.outputMode = validModes.includes(mode) ? mode : "json";
+   }
 
   // init default
   initWithBase(state.baseCidr);

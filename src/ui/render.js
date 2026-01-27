@@ -87,15 +87,17 @@ function escapeAttr(s) {
 }
 
 export function renderOutput(store, els) {
-  const leafIds = store.leafIds();
-  const leafNodes = leafIds.map(id => store.getNode(id));
+   const leafIds = store.leafIds();
+   const leafNodes = leafIds.map(id => store.getNode(id));
 
-  if (store.state.outputMode === "json") {
-    els.outputHint.textContent = "JSON reflects data in above table (realtime)";
-  } else {
-    els.outputHint.textContent = "HTML is a static table of leaf subnets only (current plan).";
-  }
+   const hints = {
+     json: "JSON reflects data in above table (realtime)",
+     yaml: "YAML reflects data in above table (realtime)",
+     html: "HTML is a static table of leaf subnets only (realtime)"
+   };
 
-  // Actual output is set by main.js (to avoid circular imports between render and output modules)
-  els.onNeedOutput(leafNodes);
-}
+   els.outputHint.textContent = hints[store.state.outputMode] || hints.json;
+
+   // Actual output is set by main.js (to avoid circular imports between render and output modules)
+   els.onNeedOutput(leafNodes);
+ }

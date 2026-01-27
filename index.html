@@ -46,10 +46,13 @@
           <span>Show details</span>
         </label>
 
-        <label class="toggleSwitch">
-          <input id="outputFormat" type="checkbox" />
-          <span class="slider"></span>
-          <span id="outputFormatLabel" class="label">Output: JSON</span>
+        <label class="field">
+          <span>Output Format</span>
+          <select id="outputFormat">
+            <option value="json">JSON</option>
+            <option value="yaml">YAML</option>
+            <option value="html">HTML</option>
+          </select>
         </label>
 
         <button id="copyOutput" class="btn">Copy</button>
