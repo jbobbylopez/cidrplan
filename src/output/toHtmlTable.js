@@ -1,13 +1,5 @@
 import { describeCidr } from "../net/subnet.js";
-
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+import { escapeHtml } from "../utils/escape.js";
 
 export function toStaticHtmlTable(leafNodes, { showDetails }) {
   const headers = [

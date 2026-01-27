@@ -1,4 +1,5 @@
 import { describeCidr } from "../net/subnet.js";
+import { escapeAttr } from "../utils/escape.js";
 
 let tableListenerAttached = false;
 
@@ -92,13 +93,7 @@ function renderTableHtml(leafNodes, { showDetails }) {
   `;
 }
 
-function escapeAttr(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
+
 
 export function renderOutput(store, els) {
    const leafIds = store.leafIds();
