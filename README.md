@@ -76,6 +76,6 @@ Use freely for personal and commercial purposes.
 
 ---
 
-**Version**: v0.1.5
+**Version**: v0.1.6
 
 For more information, visit [jbldata.com](https://www.jbldata.com/)
