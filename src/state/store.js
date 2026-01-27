@@ -9,7 +9,9 @@ export function createStore() {
   const state = {
     baseCidr: "10.0.0.0/8",
     showDetails: false,
-    outputMode: "json", // "json" | "yaml" | "html"
+    outputMode: "json", // "json" | "yaml" | "html" | "html-rendered"
+    namePrefix: "",
+    nameSuffix: "",
     rootId: null,
     nodes: {}, // id -> {id, cidr, name, parentId, children:[id,id] | null }
   };
@@ -94,6 +96,14 @@ export function createStore() {
     state.outputMode = OUTPUT_MODES.includes(mode) ? mode : "json";
   }
 
+  function setNamePrefix(prefix) {
+    state.namePrefix = String(prefix ?? "");
+  }
+
+  function setNameSuffix(suffix) {
+    state.nameSuffix = String(suffix ?? "");
+  }
+
   // init default
   initWithBase(state.baseCidr);
 
@@ -108,5 +118,7 @@ export function createStore() {
     setName,
     setShowDetails,
     setOutputMode,
+    setNamePrefix,
+    setNameSuffix,
   };
 }
