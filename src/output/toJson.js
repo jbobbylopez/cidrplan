@@ -1,12 +1,14 @@
 import { describeCidr } from "../net/subnet.js";
+import { applyNameAffixes } from "../utils/naming.js";
 
-export function toMinimalJson(leafNodes) {
+export function toMinimalJson(leafNodes, { namePrefix = "", nameSuffix = "" } = {}) {
   // Minimal: base fields only + name
   const rows = leafNodes.map(n => {
     const d = describeCidr(n.cidr);
+    const displayName = applyNameAffixes(n.name, namePrefix, nameSuffix);
     return {
       cidr: d.cidr,
-      name: n.name || "",
+      name: displayName,
       hosts: { total: d.total, usable: d.usable }
     };
   });
