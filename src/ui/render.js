@@ -1,5 +1,7 @@
 import { describeCidr } from "../net/subnet.js";
 
+let tableListenerAttached = false;
+
 export function renderApp(store, els) {
   const { state } = store;
   const leafIds = store.leafIds();
@@ -8,29 +10,41 @@ export function renderApp(store, els) {
   // Table
   els.table.innerHTML = renderTableHtml(leafNodes, { showDetails: state.showDetails });
 
-  // Wire events for table controls
-  leafNodes.forEach(n => {
-    const nameEl = els.table.querySelector(`[data-name="${n.id}"]`);
-    nameEl.addEventListener("input", (e) => {
-      store.setName(n.id, e.target.value);
-      renderOutput(store, els);
-    });
-
-    const divideBtn = els.table.querySelector(`[data-divide="${n.id}"]`);
-    divideBtn.addEventListener("click", () => {
-      store.divide(n.id);
-      renderApp(store, els);
-    });
-
-    const joinBtn = els.table.querySelector(`[data-join="${n.id}"]`);
-    joinBtn.addEventListener("click", () => {
-      store.join(n.id);
-      renderApp(store, els);
-    });
-  });
+  // Attach event delegation listeners only once
+  if (!tableListenerAttached) {
+    attachTableListeners(store, els);
+    tableListenerAttached = true;
+  }
 
   // Output
   renderOutput(store, els);
+}
+
+function attachTableListeners(store, els) {
+  els.table.addEventListener("input", (e) => {
+    if (e.target.matches("[data-name]")) {
+      const nodeId = e.target.getAttribute("data-name");
+      store.setName(nodeId, e.target.value);
+      renderOutput(store, els);
+    }
+  });
+
+  els.table.addEventListener("click", (e) => {
+    const divideBtn = e.target.closest("[data-divide]");
+    if (divideBtn) {
+      const nodeId = divideBtn.getAttribute("data-divide");
+      store.divide(nodeId);
+      renderApp(store, els);
+      return;
+    }
+
+    const joinBtn = e.target.closest("[data-join]");
+    if (joinBtn) {
+      const nodeId = joinBtn.getAttribute("data-join");
+      store.join(nodeId);
+      renderApp(store, els);
+    }
+  });
 }
 
 function renderTableHtml(leafNodes, { showDetails }) {
