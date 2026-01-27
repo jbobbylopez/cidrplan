@@ -1,6 +1,14 @@
-// IPv4 helpers: parse CIDR, compute fields, split blocks
-// Modern behavior: /31 usable=2 (RFC 3021), /32 usable=1
+/**
+ * IPv4 subnet utilities
+ * Follows modern RFC 3021 behavior: /31 has 2 usable hosts, /32 has 1 usable host
+ */
 
+/**
+ * Parse CIDR notation and normalize to network address
+ * @param {string} cidr - CIDR notation (e.g., "10.0.0.0/24")
+ * @returns {{cidr: string, ipInt: number, prefix: number}} Parsed CIDR data
+ * @throws {Error} If CIDR format is invalid or prefix is out of range
+ */
 export function parseCidr(cidr) {
   const m = String(cidr).trim().match(/^(\d{1,3}(?:\.\d{1,3}){3})\s*\/\s*(\d{1,2})$/);
   if (!m) throw new Error("Invalid CIDR format. Example: 10.0.0.0/16");
@@ -18,6 +26,12 @@ export function parseCidr(cidr) {
   return { cidr: `${intToIp(netInt)}/${prefix}`, ipInt: netInt, prefix };
 }
 
+/**
+ * Convert IPv4 address string to 32-bit integer
+ * @param {string} ip - IPv4 address (e.g., "10.0.0.0")
+ * @returns {number} 32-bit unsigned integer representation
+ * @throws {Error} If IP address is invalid
+ */
 export function ipToInt(ip) {
   const parts = ip.split(".").map(x => Number(x));
   if (parts.length !== 4 || parts.some(n => !Number.isInteger(n) || n < 0 || n > 255)) {
@@ -27,6 +41,11 @@ export function ipToInt(ip) {
   return (((parts[0] << 24) >>> 0) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) >>> 0;
 }
 
+/**
+ * Convert 32-bit integer to IPv4 address string
+ * @param {number} n - 32-bit unsigned integer
+ * @returns {string} IPv4 address (e.g., "10.0.0.0")
+ */
 export function intToIp(n) {
   return [
     (n >>> 24) & 255,
@@ -73,6 +92,11 @@ export function lastUsableInt(netInt, prefix) {
   return (broadcastInt(netInt, prefix) - 1) >>> 0;
 }
 
+/**
+ * Get comprehensive details about a CIDR block
+ * @param {string} cidr - CIDR notation (e.g., "10.0.0.0/24")
+ * @returns {Object} Object with cidr, network, prefix, mask, total, usable, broadcast, firstUsable, lastUsable
+ */
 export function describeCidr(cidr) {
   const { ipInt: netInt, prefix } = parseCidr(cidr);
   const maskInt = prefixToMaskInt(prefix);
@@ -92,6 +116,12 @@ export function describeCidr(cidr) {
   };
 }
 
+/**
+ * Split a CIDR block into two equal subnets
+ * @param {string} cidr - CIDR notation (e.g., "10.0.0.0/24")
+ * @returns {[string, string]} Two CIDR strings with prefix+1
+ * @throws {Error} If CIDR is /32 (cannot be divided further)
+ */
 export function splitCidr(cidr) {
   const { ipInt: netInt, prefix } = parseCidr(cidr);
   if (prefix >= 32) throw new Error("Cannot divide a /32.");
