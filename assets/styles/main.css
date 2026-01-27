@@ -38,16 +38,17 @@ body{
  }
 
  .adPlaceholder{
-   width: 100%;
+   width: 100vw;
    height: 90px;
-   margin: 16px 0;
-   padding: 8px 0;
+   margin: 0 0 0 0;
+   margin-left: calc(-50vw + 50%);
+   padding: 0;
    display: flex;
    align-items: center;
    justify-content: center;
    background: rgba(255,255,255,.02);
-   border: 1px dashed var(--border);
-   border-radius: 8px;
+   border-bottom: 1px solid var(--border);
+   border-radius: 0;
    color: var(--muted);
    font-size: 12px;
  }
