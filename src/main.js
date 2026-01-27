@@ -11,6 +11,8 @@ const els = {
    baseCidr: document.getElementById("baseCidr"),
    applyBase: document.getElementById("applyBase"),
    reset: document.getElementById("reset"),
+   namePrefix: document.getElementById("namePrefix"),
+   nameSuffix: document.getElementById("nameSuffix"),
    showDetails: document.getElementById("showDetails"),
    outputFormat: document.getElementById("outputFormat"),
    copyOutput: document.getElementById("copyOutput"),
@@ -68,10 +70,12 @@ function setError(msg) {
 }
 
 function syncControlsFromState() {
-   els.baseCidr.value = store.state.baseCidr;
-   els.showDetails.checked = store.state.showDetails;
-   els.outputFormat.value = store.state.outputMode;
- }
+  els.baseCidr.value = store.state.baseCidr;
+  els.namePrefix.value = store.state.namePrefix;
+  els.nameSuffix.value = store.state.nameSuffix;
+  els.showDetails.checked = store.state.showDetails;
+  els.outputFormat.value = store.state.outputMode;
+}
 
 els.applyBase.addEventListener("click", () => {
   try {
@@ -88,6 +92,16 @@ els.reset.addEventListener("click", () => {
   store.initWithBase(DEFAULT_CIDR);
   renderApp(store, els);
   syncControlsFromState();
+});
+
+els.namePrefix.addEventListener("input", () => {
+  store.setNamePrefix(els.namePrefix.value);
+  renderApp(store, els);
+});
+
+els.nameSuffix.addEventListener("input", () => {
+  store.setNameSuffix(els.nameSuffix.value);
+  renderApp(store, els);
 });
 
 els.showDetails.addEventListener("change", () => {
