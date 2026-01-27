@@ -19,23 +19,27 @@ const els = {
    outputCode: document.getElementById("outputCode"),
    outputHint: document.getElementById("outputHint"),
   onNeedOutput: (leafNodes) => {
-     let out;
-     switch (store.state.outputMode) {
-       case "json":
-         out = toMinimalJson(leafNodes);
-         break;
-       case "yaml":
-         out = toYaml(leafNodes);
-         break;
-       case "html":
-         out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
-         break;
-       default:
-         out = "";
-     }
-
-     els.outputCode.textContent = out;
-   }
+    let out;
+    try {
+      switch (store.state.outputMode) {
+        case "json":
+          out = toMinimalJson(leafNodes);
+          break;
+        case "yaml":
+          out = toYaml(leafNodes);
+          break;
+        case "html":
+          out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+          break;
+        default:
+          out = "";
+      }
+      els.outputCode.textContent = out;
+    } catch (e) {
+      setError(`Error generating output: ${e.message || String(e)}`);
+      els.outputCode.textContent = "";
+    }
+  }
 };
 
 function setError(msg) {
