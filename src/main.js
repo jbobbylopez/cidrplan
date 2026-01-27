@@ -17,9 +17,11 @@ const els = {
    error: document.getElementById("error"),
    table: document.getElementById("subnetTable"),
    outputCode: document.getElementById("outputCode"),
+   outputRendered: document.getElementById("outputRendered"),
    outputHint: document.getElementById("outputHint"),
   onNeedOutput: (leafNodes) => {
     let out;
+    let isRenderedHtml = false;
     try {
       switch (store.state.outputMode) {
         case "json":
@@ -31,10 +33,23 @@ const els = {
         case "html":
           out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
           break;
+        case "html-rendered":
+          out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+          isRenderedHtml = true;
+          break;
         default:
           out = "";
       }
-      els.outputCode.textContent = out;
+      
+      if (isRenderedHtml) {
+        els.outputCode.parentElement.hidden = true;
+        els.outputRendered.innerHTML = out;
+        els.outputRendered.hidden = false;
+      } else {
+        els.outputRendered.hidden = true;
+        els.outputCode.parentElement.hidden = false;
+        els.outputCode.textContent = out;
+      }
     } catch (e) {
       setError(`Error generating output: ${e.message || String(e)}`);
       els.outputCode.textContent = "";

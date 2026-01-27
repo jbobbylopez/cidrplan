@@ -9,11 +9,12 @@ export const USE_ADSENSE = false;
 export const DEFAULT_CIDR = "10.0.0.0/8";
 
 // Valid output format modes
-export const OUTPUT_MODES = ["json", "yaml", "html"];
+export const OUTPUT_MODES = ["json", "yaml", "html", "html-rendered"];
 
 // Output format hints/descriptions
 export const OUTPUT_HINTS = {
   json: "JSON reflects data in above table (realtime)",
   yaml: "YAML reflects data in above table (realtime)",
-  html: "HTML is a static table of leaf subnets only (realtime)"
+  html: "HTML code for a static table of leaf subnets (realtime)",
+  "html-rendered": "Rendered HTML table preview (not copyable)"
 };

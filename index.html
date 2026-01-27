@@ -49,9 +49,10 @@
         <label class="field">
           <span>Output Format</span>
           <select id="outputFormat">
-            <option value="json">JSON</option>
+            <option value="json" selected>JSON</option>
             <option value="yaml">YAML</option>
-            <option value="html">HTML</option>
+            <option value="html">HTML Code</option>
+            <option value="html-rendered">Rendered HTML</option>
           </select>
         </label>
 
@@ -75,6 +76,7 @@
         <p class="subtitle" id="outputHint">JSON reflects data in above table (realtime)</p>
       </div>
       <pre class="code"><code id="outputCode"></code></pre>
+      <div id="outputRendered" class="renderedOutput" hidden></div>
     </section>
 
     <footer class="footer">
