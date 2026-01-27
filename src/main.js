@@ -25,18 +25,24 @@ const els = {
     let out;
     let isRenderedHtml = false;
     try {
+      const formatOptions = {
+        showDetails: store.state.showDetails,
+        namePrefix: store.state.namePrefix,
+        nameSuffix: store.state.nameSuffix
+      };
+
       switch (store.state.outputMode) {
         case "json":
-          out = toMinimalJson(leafNodes);
+          out = toMinimalJson(leafNodes, formatOptions);
           break;
         case "yaml":
-          out = toYaml(leafNodes);
+          out = toYaml(leafNodes, formatOptions);
           break;
         case "html":
-          out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+          out = toStaticHtmlTable(leafNodes, formatOptions);
           break;
         case "html-rendered":
-          out = toStaticHtmlTable(leafNodes, { showDetails: store.state.showDetails });
+          out = toStaticHtmlTable(leafNodes, formatOptions);
           isRenderedHtml = true;
           break;
         default:
