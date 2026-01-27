@@ -1,81 +1,70 @@
 # CidrPlan - Code Improvement TODOs
 
-## Critical Issues
+## Completed (v0.1.5)
 
-### Event Listener Leaks (src/ui/render.js)
-- Event listeners are re-attached every render cycle in `renderApp()` (lines 14, 20, 26)
-- Creates multiple listeners for same element
-- **Solution**: Use event delegation OR remove old listeners before attaching new ones
-- **Priority**: HIGH
+### ✅ Event Listener Leaks
+- **Status**: FIXED
+- **Change**: Switched table controls to event delegation in `renderApp()` instead of re-attaching listeners on every render
+- **Commit**: Atomic refactor with no regressions
+
+### ✅ Extract Shared Utilities
+- **Status**: FIXED
+- **Change**: Created `src/utils/escape.js` with `escapeHtml()`, `escapeAttr()`, and `escapeYaml()` functions
+- **Impact**: Eliminated duplication across output modules (toHtmlTable.js, toYaml.js)
+
+### ✅ Extract Magic Values / Configuration
+- **Status**: FIXED
+- **Change**: Created `src/config.js` with all configurable constants
+- **Includes**: `USE_ADSENSE`, `DEFAULT_CIDR`, `OUTPUT_MODES`, `OUTPUT_HINTS`
+- **Impact**: Single source of truth for app configuration
+
+### ✅ Add Error Boundaries
+- **Status**: FIXED
+- **Change**: Wrapped formatter calls in try-catch with user-friendly error messages in `main.js`
+- **Impact**: App gracefully handles formatter errors instead of crashing
+
+### ✅ Add JSDoc Comments
+- **Status**: PARTIALLY COMPLETE
+- **Files completed**: `src/net/subnet.js` (RFC 3021 behavior documented for /31, /32)
+- **Files completed**: `src/utils/escape.js`, `src/utils/naming.js`
+- **Still needed**: `src/state/store.js`, `src/output/*` modules
+- **Priority**: MEDIUM
+
+### ✅ Update Comments (store.js)
+- **Status**: FIXED
+- **Change**: Line 12 in store.js now correctly documents output modes: `"json" | "yaml" | "html" | "html-rendered"`
+
+---
+
+## Critical Issues (Still Open)
 
 ### Mutable State Exposure (src/state/store.js)
-- `state` object is directly exposed in return object
+- `state` object is directly exposed in return object (line 111)
 - External code can mutate state bypassing setter methods
 - **Solution**: Return deepProxy or only expose getters
 - **Priority**: HIGH
-
-### Output Formatter Coupling (src/main.js)
-- `onNeedOutput` callback contains switch statement for three output formats
-- Tightly couples main.js to all output modules
-- **Solution**: Extract to `src/output/formatter.js` or create output registry
-- **Priority**: MEDIUM
+- **Note**: Users can access `store.state` directly and modify it, bypassing validation
 
 ---
 
-## Code Quality & Maintainability
+## Medium Priority - Code Quality
 
-### Extract Shared Utilities
-- **Escape functions**: `escapeAttr()` in render.js and `escapeHtml()` in toHtmlTable.js are nearly identical
-- **Solution**: Create `src/utils/escape.js` with shared escaping utilities
-- **Also applies to**: `escapeYamlString()` in toYaml.js
+### Output Formatter Registry Pattern
+- **Status**: PARTIALLY COMPLETE
+- **Current**: `main.js` directly imports all formatters and uses switch statement for modes
+- **Completed**: `OUTPUT_MODES` and `OUTPUT_HINTS` centralized in config.js
+- **Remaining**: Extract formatter imports to registry that maps format names to formatter functions
+- **Solution**: Create `src/output/registry.js` with pattern like:
+  ```javascript
+  export const formatters = {
+    json: toJson,
+    yaml: toYaml,
+    html: toHtmlTable,
+    "html-rendered": toHtmlTable
+  };
+  ```
+- **Benefits**: Single place to manage output formats, easier to add new ones, reduces main.js coupling
 - **Priority**: MEDIUM
-
-### Output Formatter Registry (src/output/registry.js)
-- Currently main.js directly imports all formatters
-- New formatters require code changes in main.js
-- **Solution**: Create registry pattern that maps format names to formatter functions
-- **Benefits**: Single place to manage output formats, easier to add new ones
-- **Priority**: MEDIUM
-
-### Standardize Code Style
-- **Indentation**: Lines 23-40, 53-57, 69-74, 81-85 in main.js have mixed 2-space and 3-space indentation
-- **Solution**: Enforce consistent 2-space indentation throughout
-- **Priority**: LOW
-
----
-
-## Configuration & Constants
-
-### Extract Magic Values (src/config.js)
-- Hard-coded default CIDR "10.0.0.0/8" in main.js reset handler
-- Ad configuration `USE_ADSENSE` flag should be in config
-- Output modes hardcoded in multiple places
-- **Solution**: Create `src/config.js` with all configurable constants
-- **Priority**: MEDIUM
-
-### Update Comments
-- Line 11 in store.js: Comment says `"json" | "html"` but should include `"yaml"`
-- **Solution**: Update to reflect current supported modes
-- **Priority**: LOW
-
----
-
-## Documentation
-
-### Add JSDoc Comments
-- **Files**: `src/net/subnet.js`, `src/state/store.js`, `src/output/*`
-- **Focus**: Especially document RFC 3021 behavior for /31, /32 in subnet.js
-- **Benefits**: Improves IDE autocomplete and code discoverability
-- **Priority**: MEDIUM
-
-### Escape Function Documentation
-- YAML escape logic with regex pattern needs explanation
-- HTML escape coverage should be documented
-- **Priority**: LOW
-
----
-
-## Data Flow Improvements
 
 ### Extract Leaf Node Transformation
 - Each output formatter independently calls `describeCidr()` on leaf nodes
@@ -83,33 +72,21 @@
 - **Benefits**: Single place to modify how nodes are prepared for export
 - **Priority**: MEDIUM
 
+### Standardize Code Style
+- **Status**: PENDING
+- **Issue**: Mixed 2-space and 3-space indentation in some files
+- **Solution**: Run through linter or manual cleanup
+- **Priority**: LOW
+
+---
+
+## Data Flow & Architecture
+
 ### Output Format Validation
 - No enforcement that output formatter functions follow consistent signature
-- **Solution**: Create interface/type definition for formatters
+- **Solution**: Document formatter interface/contract (not strict typing without TypeScript)
+- **Current**: All formatters accept `(leafNodes, options)` with options containing `showDetails`, `namePrefix`, `nameSuffix`
 - **Priority**: LOW
-
----
-
-## Error Handling
-
-### Add Error Boundaries
-- App crashes if any output formatter throws an error
-- **Solution**: Wrap formatter calls in try-catch with user-friendly error messages
-- **Priority**: MEDIUM
-
-### Silent Failures in Store
-- `divide()`, `join()` methods silently return on precondition failures
-- **Solution**: Consider logging warnings or throwing descriptive errors for debugging
-- **Priority**: LOW
-
----
-
-## UI/UX Improvements
-
-### Event Listener Performance
-- Attach/detach cycle in render happens on every state change
-- **Solution**: Implement proper cleanup or use event delegation
-- **Priority**: MEDIUM
 
 ### Hardcoded Data Attributes
 - HTML uses `data-name`, `data-divide`, `data-join` tied directly to IDs
@@ -124,23 +101,27 @@
 - State is lost on page refresh
 - **Users expect**: To save their planning sessions
 - **Solution**: Add localStorage integration to store
+  - Save state on every state change
+  - Restore on app initialization
+  - Add "Clear history" button if desired
 - **Priority**: MEDIUM
 
 ### UID Generation Security
 - `uid()` function uses `Math.random()` (not cryptographically secure)
 - **Solution**: Use `crypto.randomUUID()` if browser compatibility allows
 - **Note**: Document limitation if maintaining Math.random()
+- **Current**: Works fine for local app, not exposed to network
+- **Priority**: LOW
+
+### Input Validation
+- `ipToInt()` validates but `intToIp()` doesn't validate output range
+- **Solution**: Add boundary checks for completeness
 - **Priority**: LOW
 
 ### Internationalization (i18n)
 - Hint text and error messages hardcoded throughout codebase
 - **Solution**: Extract to localization system if multi-language support planned
 - **Priority**: LOW (future feature)
-
-### Input Validation
-- `ipToInt()` validates but `intToIp()` doesn't validate output range
-- **Solution**: Add boundary checks for completeness
-- **Priority**: LOW
 
 ---
 
@@ -157,15 +138,15 @@
 
 ---
 
-## Refactoring Priority Order
+## Refactoring Priority Order (Remaining)
 
-1. Fix event listener leaks (HIGH)
-2. Extract output formatter registry (MEDIUM)
-3. Extract escape utilities (MEDIUM)
-4. Add error boundaries (MEDIUM)
-5. Extract configuration (MEDIUM)
-6. Fix mutable state exposure (HIGH)
-7. Add JSDoc comments (MEDIUM)
+1. Fix mutable state exposure (HIGH)
+2. Add output formatter registry (MEDIUM)
+3. Extract leaf node transformation utility (MEDIUM)
+4. Add JSDoc to store.js and output modules (MEDIUM)
+5. Add LocalStorage persistence (MEDIUM)
+6. Output format validation/documentation (LOW)
+7. Extract UI constants (LOW)
 8. Standardize indentation (LOW)
-9. Add LocalStorage persistence (MEDIUM)
-10. Add logging/debugging (LOW)
+9. Add logging/debugging (LOW)
+10. Add unit tests (LOW - post-release)
