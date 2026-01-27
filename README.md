@@ -72,7 +72,7 @@ Created by [J. Bobby Lopez](https://www.jbldata.com/)
 
 ## License
 
-Use freely for personal and commercial purposes.
+MIT License. See [LICENSE](LICENSE) file for details.
 
 ---
 
