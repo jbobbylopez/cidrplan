@@ -1,4 +1,5 @@
 import { parseCidr, splitCidr } from "../net/subnet.js";
+import { OUTPUT_MODES } from "../config.js";
 
 function uid() {
   return Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
@@ -8,7 +9,7 @@ export function createStore() {
   const state = {
     baseCidr: "10.0.0.0/8",
     showDetails: false,
-    outputMode: "json", // "json" | "html"
+    outputMode: "json", // "json" | "yaml" | "html"
     rootId: null,
     nodes: {}, // id -> {id, cidr, name, parentId, children:[id,id] | null }
   };
@@ -90,9 +91,8 @@ export function createStore() {
   }
 
   function setOutputMode(mode) {
-     const validModes = ["json", "yaml", "html"];
-     state.outputMode = validModes.includes(mode) ? mode : "json";
-   }
+    state.outputMode = OUTPUT_MODES.includes(mode) ? mode : "json";
+  }
 
   // init default
   initWithBase(state.baseCidr);

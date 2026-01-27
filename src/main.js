@@ -3,9 +3,7 @@ import { renderApp } from "./ui/render.js";
 import { toMinimalJson } from "./output/toJson.js";
 import { toYaml } from "./output/toYaml.js";
 import { toStaticHtmlTable } from "./output/toHtmlTable.js";
-
-// Ad configuration: toggle between AdSense and custom ads
-const USE_ADSENSE = false;
+import { USE_ADSENSE, DEFAULT_CIDR } from "./config.js";
 
 const store = createStore();
 
@@ -67,11 +65,11 @@ els.applyBase.addEventListener("click", () => {
 });
 
 els.reset.addEventListener("click", () => {
-   setError("");
-   store.initWithBase("10.0.0.0/8");
-   renderApp(store, els);
-   syncControlsFromState();
- });
+  setError("");
+  store.initWithBase(DEFAULT_CIDR);
+  renderApp(store, els);
+  syncControlsFromState();
+});
 
 els.showDetails.addEventListener("change", () => {
   store.setShowDetails(els.showDetails.checked);

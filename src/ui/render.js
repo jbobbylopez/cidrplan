@@ -1,5 +1,6 @@
 import { describeCidr } from "../net/subnet.js";
 import { escapeAttr } from "../utils/escape.js";
+import { OUTPUT_HINTS } from "../config.js";
 
 let tableListenerAttached = false;
 
@@ -96,17 +97,11 @@ function renderTableHtml(leafNodes, { showDetails }) {
 
 
 export function renderOutput(store, els) {
-   const leafIds = store.leafIds();
-   const leafNodes = leafIds.map(id => store.getNode(id));
+  const leafIds = store.leafIds();
+  const leafNodes = leafIds.map(id => store.getNode(id));
 
-   const hints = {
-     json: "JSON reflects data in above table (realtime)",
-     yaml: "YAML reflects data in above table (realtime)",
-     html: "HTML is a static table of leaf subnets only (realtime)"
-   };
+  els.outputHint.textContent = OUTPUT_HINTS[store.state.outputMode] || OUTPUT_HINTS.json;
 
-   els.outputHint.textContent = hints[store.state.outputMode] || hints.json;
-
-   // Actual output is set by main.js (to avoid circular imports between render and output modules)
-   els.onNeedOutput(leafNodes);
- }
+  // Actual output is set by main.js (to avoid circular imports between render and output modules)
+  els.onNeedOutput(leafNodes);
+}
