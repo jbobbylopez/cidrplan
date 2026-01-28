@@ -76,6 +76,6 @@ MIT License. See [LICENSE](LICENSE) file for details.
 
 ---
 
-**Version**: v0.1.6
+**Version**: v0.1.7
 
 For more information, visit [jbldata.com](https://www.jbldata.com/)
