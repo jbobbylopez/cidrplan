@@ -1,5 +1,6 @@
 import { describeCidr } from "../net/subnet.js";
 import { escapeAttr } from "../utils/escape.js";
+import { formatNumber } from "../utils/format.js";
 import { OUTPUT_HINTS } from "../config.js";
 
 let tableListenerAttached = false;
@@ -315,7 +316,7 @@ function renderTableHtml(leafNodes, { showDetails }) {
 
   const body = leafNodes.map(n => {
     const d = describeCidr(n.cidr);
-    const hostsText = `${d.total} (${d.usable})`;
+    const hostsText = `${formatNumber(d.total)} (${formatNumber(d.usable)})`;
 
     const detailCells = showDetails
       ? `
