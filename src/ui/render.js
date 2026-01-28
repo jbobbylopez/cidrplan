@@ -29,20 +29,26 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
   const rows = Array.from(tableEl.querySelectorAll('tbody tr'));
   if (rows.length === 0) return;
   
-  // Build ancestry for each leaf node
+  // Build ancestry for each leaf node (leaf first, root last)
   const ancestries = leafNodes.map(node => {
     const path = [];
     let current = node.id;
     while (current) {
       const n = store.getNode(current);
       const desc = describeCidr(n.cidr);
-      path.unshift({ id: current, prefix: desc.prefix });
+      path.push({ id: current, prefix: desc.prefix });
       current = n.parentId;
     }
     return path;
   });
   
   const maxLevels = Math.max(...ancestries.map(a => a.length));
+  
+  // Pad all ancestries to maxLevels by prepending nulls (for shorter paths)
+  const paddedAncestries = ancestries.map(a => {
+    const padding = Array(maxLevels - a.length).fill(null);
+    return [...padding, ...a];
+  });
   
   // Update hierarchy header colspan to match number of levels
   const hierarchyHeader = tableEl.querySelector('th.hierarchy-header');
@@ -51,7 +57,7 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
   }
   
   // Calculate which cells to render and their rowspans
-  const cellSpans = {}; // key: "rowIdx-levelIdx", value: { rowspan, prefix }
+  const cellSpans = {}; // key: "rowIdx-levelIdx", value: { rowspan, prefix } or null for padding
   const skipRows = new Set(); // "rowIdx-levelIdx" entries to skip
   
   for (let levelIdx = 0; levelIdx < maxLevels; levelIdx++) {
@@ -62,18 +68,21 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
         continue;
       }
       
-      const ancestry = ancestries[rowIdx];
-      if (!ancestry[levelIdx]) {
+      const ancestor = paddedAncestries[rowIdx][levelIdx];
+      
+      // For padding nulls, just mark as single row
+      if (!ancestor) {
+        cellSpans[`${rowIdx}-${levelIdx}`] = null;
         rowIdx++;
         continue;
       }
       
-      const ancestor = ancestry[levelIdx];
       let rowspan = 1;
       
-      // Count consecutive rows with same ancestor
+      // Count consecutive rows with same ancestor at this level
       for (let nextRow = rowIdx + 1; nextRow < rows.length; nextRow++) {
-        if (ancestries[nextRow][levelIdx] && ancestries[nextRow][levelIdx].id === ancestor.id) {
+        const nextAncestor = paddedAncestries[nextRow][levelIdx];
+        if (nextAncestor && nextAncestor.id === ancestor.id) {
           rowspan++;
         } else {
           break;
@@ -113,7 +122,7 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
     const placeholder = row.querySelector('.hierarchy-placeholder');
     if (!placeholder) return;
     
-    // Build list of cells to add for this row
+    // Build list of cells to add for this row (leaf to root order)
     const cellsToAdd = [];
     for (let levelIdx = 0; levelIdx < maxLevels; levelIdx++) {
       const key = `${rowIdx}-${levelIdx}`;
@@ -124,21 +133,22 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
       }
       
       const span = cellSpans[key];
-      if (span) {
-        cellsToAdd.push({ 
-          rowspan: span.rowspan, 
-          prefix: span.prefix,
-          levelIdx,
-          rowIdx 
-        });
-      }
+      if (span === undefined) continue; // Not calculated yet (shouldn't happen)
+      
+      cellsToAdd.push({ 
+        rowspan: span ? span.rowspan : 1, 
+        prefix: span ? span.prefix : null,
+        levelIdx,
+        rowIdx,
+        isPadding: !span
+      });
     }
     
     // Replace placeholder with actual hierarchy cells
-    cellsToAdd.forEach(({ rowspan, prefix, levelIdx, rowIdx }) => {
+    cellsToAdd.forEach(({ rowspan, prefix, levelIdx, rowIdx, isPadding }) => {
       const td = document.createElement('td');
-      td.className = 'hierarchy-cell';
-      td.setAttribute('data-prefix', prefix);
+      td.className = isPadding ? 'hierarchy-cell padding' : 'hierarchy-cell';
+      td.setAttribute('data-prefix', prefix || '');
       td.setAttribute('data-level', levelIdx);
       td.setAttribute('data-row', rowIdx);
       td.setAttribute('data-rowspan', rowspan);
@@ -147,10 +157,12 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
         td.rowSpan = rowspan;
       }
       
-      const span = document.createElement('span');
-      span.className = 'hierarchy-text';
-      span.textContent = `/${prefix}`;
-      td.appendChild(span);
+      if (!isPadding) {
+        const span = document.createElement('span');
+        span.className = 'hierarchy-text';
+        span.textContent = `/${prefix}`;
+        td.appendChild(span);
+      }
       
       placeholder.parentNode.insertBefore(td, placeholder);
     });
@@ -174,6 +186,7 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
     cell.classList.add('highlighted');
     
     // Highlight all ancestors (cells at higher levels covering same rows)
+    // Ancestors are at HIGHER levelIdx values (further to the right)
     hierarchyCells.forEach(otherCell => {
       const otherLevel = parseInt(otherCell.getAttribute('data-level'));
       const otherRow = parseInt(otherCell.getAttribute('data-row'));
@@ -186,6 +199,7 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
     });
     
     // Highlight all descendants (cells at lower levels within this span)
+    // Descendants are at LOWER levelIdx values (further to the left)
     hierarchyCells.forEach(otherCell => {
       const otherLevel = parseInt(otherCell.getAttribute('data-level'));
       const otherRow = parseInt(otherCell.getAttribute('data-row'));
@@ -238,7 +252,7 @@ function renderHierarchyVisualization(tableEl, leafNodes, store) {
           }
         });
         
-        // Highlight the deepest level cell covering this row
+        // Highlight the deepest level cell covering this row (lowest levelIdx = most specific leaf)
         if (coveringCells.length > 0) {
           const deepestCell = coveringCells.reduce((deepest, current) => {
             const currentLevel = parseInt(current.getAttribute('data-level'));
