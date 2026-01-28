@@ -262,14 +262,50 @@ input[type="text"]:focus{
 }
 
 .badge{
+   font-family: var(--mono);
+   font-size: 12px;
+   padding: 3px 8px;
+   border-radius: 999px;
+   border: 1px solid var(--border);
+   background: rgba(0,0,0,.22);
+   color: var(--text);
+   display:inline-block;
+ }
+
+.hierarchy-header{
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  min-width: 32px;
+}
+
+.hierarchy-placeholder{
+  display: none;
+}
+
+.hierarchy-cell{
+  padding: 4px 2px;
+  text-align: center;
+  min-width: 32px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.hierarchy-cell:hover,
+.hierarchy-cell.highlighted{
+  background-color: rgba(122,162,255,.25);
+}
+
+.hierarchy-text{
   font-family: var(--mono);
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(0,0,0,.22);
-  color: var(--text);
-  display:inline-block;
+  font-size: 11px;
+  color: var(--accent);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .code{
