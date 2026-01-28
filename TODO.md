@@ -1,36 +1,47 @@
 # CidrPlan - Code Improvement TODOs
 
-## Completed (v0.1.5)
+## Completed (v0.1.7)
 
-### ✅ Event Listener Leaks
+### ✅ Subnet Hierarchy Visualization (v0.1.7)
+- **Status**: COMPLETED
+- **Change**: Added interactive hierarchy column to subnet table showing parent-child relationships
+- **Implementation**:
+  - Dynamic colspan calculation based on maximum nesting depth
+  - Rowspan calculation for cells at each ancestry level
+  - Interactive hover effects highlighting ancestors and descendants
+  - Handles both direct hovers and rowspan-covered cells
+- **Files modified**: `src/ui/render.js` (added `renderHierarchyVisualization()` function ~200 lines)
+- **Impact**: Users can now visualize how subnets are related through the hierarchy tree
+
+### ✅ Event Listener Leaks (v0.1.5)
 - **Status**: FIXED
 - **Change**: Switched table controls to event delegation in `renderApp()` instead of re-attaching listeners on every render
 - **Commit**: Atomic refactor with no regressions
 
-### ✅ Extract Shared Utilities
+### ✅ Extract Shared Utilities (v0.1.5)
 - **Status**: FIXED
 - **Change**: Created `src/utils/escape.js` with `escapeHtml()`, `escapeAttr()`, and `escapeYaml()` functions
 - **Impact**: Eliminated duplication across output modules (toHtmlTable.js, toYaml.js)
 
-### ✅ Extract Magic Values / Configuration
+### ✅ Extract Magic Values / Configuration (v0.1.5)
 - **Status**: FIXED
 - **Change**: Created `src/config.js` with all configurable constants
 - **Includes**: `USE_ADSENSE`, `DEFAULT_CIDR`, `OUTPUT_MODES`, `OUTPUT_HINTS`
 - **Impact**: Single source of truth for app configuration
 
-### ✅ Add Error Boundaries
+### ✅ Add Error Boundaries (v0.1.5)
 - **Status**: FIXED
 - **Change**: Wrapped formatter calls in try-catch with user-friendly error messages in `main.js`
 - **Impact**: App gracefully handles formatter errors instead of crashing
 
-### ✅ Add JSDoc Comments
+### ✅ Add JSDoc Comments (v0.1.5)
 - **Status**: PARTIALLY COMPLETE
 - **Files completed**: `src/net/subnet.js` (RFC 3021 behavior documented for /31, /32)
 - **Files completed**: `src/utils/escape.js`, `src/utils/naming.js`
 - **Still needed**: `src/state/store.js`, `src/output/*` modules
 - **Priority**: MEDIUM
 
-### ✅ Update Comments (store.js)
+### ✅ Update Comments (v0.1.5)
 - **Status**: FIXED
 - **Change**: Line 12 in store.js now correctly documents output modes: `"json" | "yaml" | "html" | "html-rendered"`
 
