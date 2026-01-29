@@ -1,6 +1,8 @@
 describe('CidrPlan Subnet Operations', () => {
   beforeEach(() => {
     cy.visit('/');
+    // Wait for app to initialize and render the table
+    cy.get('table#subnetTable', { timeout: 10000 }).should('exist');
   });
 
   it('should initialize with default CIDR', () => {
