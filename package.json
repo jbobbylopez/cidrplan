@@ -1,0 +1,21 @@
+{
+  "name": "cidrplan",
+  "version": "0.1.9",
+  "description": "Interactive IPv4 subnet planning and visualization",
+  "type": "module",
+  "scripts": {
+    "test": "cypress run",
+    "test:open": "cypress open",
+    "test:chrome": "cypress run --browser chrome",
+    "test:headless": "cypress run --headless"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.2"
+  },
+  "author": "J. Bobby Lopez",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbobbylopez/cidrplan"
+  }
+}
