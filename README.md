@@ -76,6 +76,42 @@ MIT License. See [LICENSE](LICENSE) file for details.
 
 ---
 
-**Version**: v0.1.7
+## Testing
+
+CidrPlan includes a comprehensive Cypress test suite covering all core functionality.
+
+### Running Tests
+
+```bash
+# Install dependencies
+npm install
+
+# Run tests in headless mode (CI/CD)
+npm test
+
+# Run tests interactively (development)
+npm run test:open
+
+# Run tests in Chrome
+npm run test:chrome
+```
+
+Before running tests, start the dev server:
+```bash
+python3 -m http.server 8000
+```
+
+### Test Coverage
+
+- **Subnet Operations** (8 tests): Divide/join logic, button states
+- **Hierarchy Visualization** (8 tests): Column rendering, alignment, hover effects
+- **Naming & Formatting** (10 tests): Custom names, prefix/suffix, number formatting
+- **Output Formats** (11 tests): JSON, YAML, HTML export validation
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
+
+---
+
+**Version**: v0.1.9
 
 For more information, visit [jbldata.com](https://www.jbldata.com/)
