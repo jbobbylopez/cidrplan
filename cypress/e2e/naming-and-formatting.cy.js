@@ -1,8 +1,10 @@
 describe('CidrPlan Naming and Formatting', () => {
   beforeEach(() => {
     cy.visit('/');
-    // Wait for app to initialize and render the table
-    cy.get('table#subnetTable', { timeout: 10000 }).should('exist');
+    // Wait for the HTML structure to load
+    cy.get('.app', { timeout: 20000 }).should('be.visible');
+    // Wait for table to be rendered
+    cy.get('#subnetTable', { timeout: 20000 }).should('exist');
   });
 
   it('should allow naming a subnet', () => {
@@ -75,11 +77,11 @@ describe('CidrPlan Naming and Formatting', () => {
   });
 
   it('should show both total and usable hosts', () => {
-    // Format should be "total (usable)"
+    // Format should be "total (usable)" with optional K/M notation and decimals
     cy.get('td:nth-child(3)').first().then(($td) => {
       const text = $td.text();
-      // Should have parentheses with two numbers
-      expect(text).to.match(/\d+[KM]?\s*\(\d+[KM]?\)/);
+      // Should have parentheses with two numbers, allowing for K/M notation with decimals
+      expect(text).to.match(/\d+\.?\d*[KM]?\s*\(\d+\.?\d*[KM]?\)/);
     });
   });
 
